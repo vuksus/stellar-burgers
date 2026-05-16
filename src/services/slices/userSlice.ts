@@ -16,11 +16,9 @@ import {
 } from '../../utils/burger-api';
 import { RootState } from '../store';
 import { TOrder } from '@utils-types';
+import { deleteCookie, setCookie } from '../../utils/cookie';
 
 export const initialState: Pick<TAuthResponse, 'user' | 'success'> & {
-  orders: TOrder[];
-  lastOrder: TOrder | null;
-  orderRequestData: boolean;
   loading: boolean;
 } = {
   success: false,
@@ -28,10 +26,7 @@ export const initialState: Pick<TAuthResponse, 'user' | 'success'> & {
     email: '',
     name: ''
   },
-  orders: [],
-  lastOrder: null,
-  orderRequestData: false,
-  loading: false
+  loading: false,
 };
 
 export const getUserAuth = createAsyncThunk(
@@ -41,13 +36,22 @@ export const getUserAuth = createAsyncThunk(
 
 export const loginUser = createAsyncThunk(
   'user/loginUser',
-  async ({ email, password }: Omit<TRegisterData, 'name'>) =>
-    await loginUserApi({ email, password })
+  async ({ email, password }: Omit<TRegisterData, 'name'>) => {
+    const res = await loginUserApi({ email, password });
+    setCookie('accessToken', res.accessToken);
+    localStorage.setItem('refreshToken', res.refreshToken);
+    return res;
+  }
 );
 
 export const registerUser = createAsyncThunk(
   'user/register',
-  async (data: TRegisterData) => await registerUserApi(data)
+  async (data: TRegisterData) => {
+    const res = await registerUserApi(data);
+    setCookie('accessToken', res.accessToken);
+    localStorage.setItem('refreshToken', res.refreshToken);
+    return res;
+  }
 );
 
 export const updateUserData = createAsyncThunk(
@@ -57,16 +61,12 @@ export const updateUserData = createAsyncThunk(
 
 export const userLogout = createAsyncThunk(
   'user/logout',
-  async () => await logoutApi()
-);
-
-export const getUserOrders = createAsyncThunk('user/getUserOrders', async () =>
-  getOrdersApi()
-);
-
-export const newUserOrder = createAsyncThunk(
-  'user/newUserOrder',
-  async (data: string[]) => await orderBurgerApi(data)
+  async () => {
+    const res = await logoutApi();
+    deleteCookie('accessToken');
+    localStorage.removeItem('refreshToken');
+    return res;
+  }
 );
 
 export const userSlice = createSlice({
@@ -75,9 +75,6 @@ export const userSlice = createSlice({
   reducers: {
     makeLoginUserSuccess: (state, action) => {
       state.success = action.payload;
-    },
-    setLastOrder: (state, action) => {
-      state.lastOrder = action.payload;
     }
   },
   extraReducers: (builder) => {
@@ -151,32 +148,6 @@ export const userSlice = createSlice({
         state.success = false;
         state.user = initialState.user;
       })
-
-      .addCase(getUserOrders.pending, (state) => {
-        state.loading = true;
-      })
-      .addCase(getUserOrders.rejected, (state, action) => {
-        state.loading = false;
-      })
-      .addCase(getUserOrders.fulfilled, (state, action) => {
-        state.loading = false;
-        state.orders = action.payload;
-      })
-
-      .addCase(newUserOrder.pending, (state) => {
-        state.loading = true;
-        state.orderRequestData = true;
-      })
-      .addCase(newUserOrder.rejected, (state, action) => {
-        state.loading = false;
-        state.orderRequestData = false;
-      })
-      .addCase(newUserOrder.fulfilled, (state, action) => {
-        state.loading = false;
-        state.orders.push(action.payload.order);
-        state.lastOrder = action.payload.order;
-        state.orderRequestData = false;
-      });
   }
 });
 
@@ -197,20 +168,5 @@ export const getUser = createSelector(
   (state) => state.user
 );
 
-export const getOrders = createSelector(
-  [userSliceSelectors],
-  (state) => state.orders
-);
-
-export const getOrderRequestStatus = createSelector(
-  [userSliceSelectors],
-  (state) => state.orderRequestData
-);
-
-export const getLastOrder = createSelector(
-  [userSliceSelectors],
-  (state) => state.lastOrder
-);
-
-export const { makeLoginUserSuccess, setLastOrder } = userSlice.actions;
+export const { makeLoginUserSuccess } = userSlice.actions;
 export const userSliceReducer = userSlice.reducer;

@@ -14,17 +14,17 @@ import styles from './app.module.css';
 
 import { AppHeader, IngredientDetails, Modal, OrderInfo } from '@components';
 import { Preloader } from '@ui';
-import { Route, Routes, useLocation, useNavigate } from 'react-router-dom';
+import { Route, Routes, useLocation, useNavigate, useParams } from 'react-router-dom';
 import { ProtectedRoute } from '../private-route/private-route';
 import { useDispatch } from '../../services/store';
 import { getIngredients } from '../../services/slices/ingredientsSlice';
 import { useEffect } from 'react';
-import { getAllFeeds } from '../../services/slices/FeedsSlice';
-import { getUserAuth, getUserOrders } from '../../services/slices/userSlice';
+import { getUserAuth } from '../../services/slices/userSlice';
 
 const App = () => {
   /** TODO: взять переменные из стора */
   const navigate = useNavigate();
+  const { number } = useParams();
 
   const location = useLocation();
   const backgroundLocation = location?.state?.background;
@@ -32,9 +32,7 @@ const App = () => {
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(getIngredients());
-    dispatch(getAllFeeds());
     dispatch(getUserAuth());
-    dispatch(getUserOrders());
   }, [dispatch]);
 
   return (
@@ -47,7 +45,7 @@ const App = () => {
         <Route
           path='/feed/:number'
           element={
-            <Modal title={'Детали заказа'} onClose={() => navigate('/feed')}>
+            <Modal title={number ? number : 'Детали заказа'} onClose={() => navigate('/feed')}>
               <OrderInfo />
             </Modal>
           }
