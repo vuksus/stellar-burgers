@@ -8,8 +8,7 @@ import { ModalOverlayUI } from '@ui';
 import { useParams } from 'react-router-dom';
 
 export const ModalUI: FC<TModalUIProps> = memo(
-    ({ title, onClose, children }) => (
-      
+  ({ title, onClose, children }) => (
     <>
       <div className={styles.modal}>
         <div className={styles.header}>

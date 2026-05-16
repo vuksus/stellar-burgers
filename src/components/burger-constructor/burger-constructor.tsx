@@ -4,15 +4,13 @@ import { BurgerConstructorUI } from '@ui';
 import { useNavigate } from 'react-router-dom';
 import { useSelector } from '../../services/store';
 import { useDispatch } from '../../services/store';
-import {
-  getUserAuthStatus,
-} from '../../services/slices/userSlice';
+import { getUserAuthStatus } from '../../services/slices/userSlice';
 import {
   getLastOrder,
-  getOrderRequestStatus, 
+  getOrderRequestStatus,
   newUserOrder,
   setLastOrder
-} from '../../services/slices/orderSlice'
+} from '../../services/slices/orderSlice';
 import {
   getConstructorBun,
   getConstructorIngredients,
@@ -47,7 +45,9 @@ export const BurgerConstructor: FC = () => {
       )
     ];
 
-    dispatch(newUserOrder(ingredientsId)).unwrap().then(() => dispatch(resetConstructor()));
+    dispatch(newUserOrder(ingredientsId))
+      .unwrap()
+      .then(() => dispatch(resetConstructor()));
     dispatch(getAllFeeds());
   };
   const closeOrderModal = () => dispatch(setLastOrder(null));

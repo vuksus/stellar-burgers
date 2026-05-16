@@ -1,19 +1,23 @@
-import { createAsyncThunk, createSelector, createSlice } from "@reduxjs/toolkit";
-import { getOrdersApi, orderBurgerApi } from "@api";
-import { TOrder } from "@utils-types";
-import { RootState } from "../store";
+import {
+  createAsyncThunk,
+  createSelector,
+  createSlice
+} from '@reduxjs/toolkit';
+import { getOrdersApi, orderBurgerApi } from '@api';
+import { TOrder } from '@utils-types';
+import { RootState } from '../store';
 
 export type IOrders = {
   orders: TOrder[];
   lastOrder: TOrder | null;
   orderRequestData: boolean;
   loading: boolean;
-} 
+};
 export const initialState: IOrders = {
   orders: [],
   lastOrder: null,
   orderRequestData: false,
-  loading: false,
+  loading: false
 };
 
 export const getUserOrders = createAsyncThunk('order/getUserOrders', async () =>
@@ -26,41 +30,42 @@ export const newUserOrder = createAsyncThunk(
 );
 
 export const orderSlice = createSlice({
-    name: 'order',
-    initialState,
-    reducers: {
-        setLastOrder: (state, action) => {
+  name: 'order',
+  initialState,
+  reducers: {
+    setLastOrder: (state, action) => {
       state.lastOrder = action.payload;
-    }},
-    extraReducers: (builder) => {
-        builder
-            .addCase(getUserOrders.pending, (state) => {
-                state.loading = true;
-              })
-              .addCase(getUserOrders.rejected, (state, action) => {
-                state.loading = false;
-              })
-              .addCase(getUserOrders.fulfilled, (state, action) => {
-                state.loading = false;
-                state.orders = action.payload;
-              })
-        
-              .addCase(newUserOrder.pending, (state) => {
-                state.loading = true;
-                state.orderRequestData = true;
-              })
-              .addCase(newUserOrder.rejected, (state, action) => {
-                state.loading = false;
-                state.orderRequestData = false;
-              })
-              .addCase(newUserOrder.fulfilled, (state, action) => {
-                state.loading = false;
-                state.orders.push(action.payload.order);
-                state.lastOrder = action.payload.order;
-                state.orderRequestData = false;
-              });
     }
-})
+  },
+  extraReducers: (builder) => {
+    builder
+      .addCase(getUserOrders.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(getUserOrders.rejected, (state, action) => {
+        state.loading = false;
+      })
+      .addCase(getUserOrders.fulfilled, (state, action) => {
+        state.loading = false;
+        state.orders = action.payload;
+      })
+
+      .addCase(newUserOrder.pending, (state) => {
+        state.loading = true;
+        state.orderRequestData = true;
+      })
+      .addCase(newUserOrder.rejected, (state, action) => {
+        state.loading = false;
+        state.orderRequestData = false;
+      })
+      .addCase(newUserOrder.fulfilled, (state, action) => {
+        state.loading = false;
+        state.orders.push(action.payload.order);
+        state.lastOrder = action.payload.order;
+        state.orderRequestData = false;
+      });
+  }
+});
 
 const orderSliceSelectors = (state: RootState) => state.order;
 

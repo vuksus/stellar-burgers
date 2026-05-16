@@ -26,7 +26,7 @@ export const initialState: Pick<TAuthResponse, 'user' | 'success'> & {
     email: '',
     name: ''
   },
-  loading: false,
+  loading: false
 };
 
 export const getUserAuth = createAsyncThunk(
@@ -59,15 +59,12 @@ export const updateUserData = createAsyncThunk(
   async (user: Partial<TRegisterData>) => await updateUserApi(user)
 );
 
-export const userLogout = createAsyncThunk(
-  'user/logout',
-  async () => {
-    const res = await logoutApi();
-    deleteCookie('accessToken');
-    localStorage.removeItem('refreshToken');
-    return res;
-  }
-);
+export const userLogout = createAsyncThunk('user/logout', async () => {
+  const res = await logoutApi();
+  deleteCookie('accessToken');
+  localStorage.removeItem('refreshToken');
+  return res;
+});
 
 export const userSlice = createSlice({
   name: 'user',
@@ -147,7 +144,7 @@ export const userSlice = createSlice({
         state.loading = false;
         state.success = false;
         state.user = initialState.user;
-      })
+      });
   }
 });
 

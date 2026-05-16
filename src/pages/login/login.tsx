@@ -1,7 +1,10 @@
 import { FC, SyntheticEvent, useState } from 'react';
 import { LoginUI } from '@ui-pages';
 import { useDispatch } from '../../services/store';
-import { loginUser, makeLoginUserSuccess } from '../../services/slices/userSlice';
+import {
+  loginUser,
+  makeLoginUserSuccess
+} from '../../services/slices/userSlice';
 import { setCookie } from '../../utils/cookie';
 import { useNavigate } from 'react-router-dom';
 
