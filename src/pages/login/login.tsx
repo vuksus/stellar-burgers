@@ -1,33 +1,36 @@
 import { FC, SyntheticEvent, useState } from 'react';
 import { LoginUI } from '@ui-pages';
-import { useDispatch } from '../../services/store';
+import { useDispatch, useSelector } from '../../services/store';
 import {
+  clearError,
+  errorUser,
   loginUser,
-  makeLoginUserSuccess
 } from '../../services/slices/userSlice';
-import { setCookie } from '../../utils/cookie';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 export const Login: FC = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const error = useSelector(errorUser);
 
   const dispatch = useDispatch();
+  const location = useLocation();
   const navigate = useNavigate();
+
   const handleSubmit = (e: SyntheticEvent) => {
     e.preventDefault();
+
+    if (error) {
+      dispatch(clearError());
+    }
+
     dispatch(loginUser({ email, password }))
       .unwrap()
-      .then((data) => {
-        try {
-          localStorage.setItem('refreshToken', data.refreshToken);
-          setCookie('accessToken', data.accessToken);
-        } catch (err) {
-          return new Error('error');
-        }
+      .then(() => {
+        const from = location.state?.from?.pathname || '/';
+        navigate(from, { replace: true });
       })
-      .then(() => dispatch(makeLoginUserSuccess(true)))
-      .then(() => navigate('/'));
+      .catch((err) => console.error(err))
   };
 
   return (

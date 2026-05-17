@@ -20,13 +20,15 @@ import { deleteCookie, setCookie } from '../../utils/cookie';
 
 export const initialState: Pick<TAuthResponse, 'user' | 'success'> & {
   loading: boolean;
+  error: null | string;
 } = {
   success: false,
   user: {
     email: '',
     name: ''
   },
-  loading: false
+  loading: false,
+  error: null
 };
 
 export const getUserAuth = createAsyncThunk(
@@ -72,6 +74,9 @@ export const userSlice = createSlice({
   reducers: {
     makeLoginUserSuccess: (state, action) => {
       state.success = action.payload;
+    },
+    clearError: (state) => {
+      state.error = null
     }
   },
   extraReducers: (builder) => {
@@ -93,15 +98,18 @@ export const userSlice = createSlice({
       .addCase(loginUser.pending, (state) => {
         state.loading = true;
         state.success = false;
+        state.error = null;
       })
       .addCase(loginUser.rejected, (state, action) => {
         state.loading = false;
         state.success = false;
+        state.error = action.error.message || 'Ошибка авторизации';
       })
       .addCase(loginUser.fulfilled, (state, action) => {
         state.loading = false;
         state.success = action.payload.success;
         state.user = action.payload.user;
+        state.error = null;
       })
 
       .addCase(registerUser.pending, (state) => {
@@ -165,5 +173,10 @@ export const getUser = createSelector(
   (state) => state.user
 );
 
-export const { makeLoginUserSuccess } = userSlice.actions;
+export const errorUser = createSelector(
+  [userSliceSelectors],
+  (state) => state.error
+);
+
+export const { makeLoginUserSuccess, clearError } = userSlice.actions;
 export const userSliceReducer = userSlice.reducer;

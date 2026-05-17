@@ -12,12 +12,14 @@ export type IOrders = {
   lastOrder: TOrder | null;
   orderRequestData: boolean;
   loading: boolean;
+  orderCreate: boolean;
 };
 export const initialState: IOrders = {
   orders: [],
   lastOrder: null,
   orderRequestData: false,
-  loading: false
+  loading: false,
+  orderCreate: false
 };
 
 export const getUserOrders = createAsyncThunk('order/getUserOrders', async () =>
@@ -53,16 +55,19 @@ export const orderSlice = createSlice({
       .addCase(newUserOrder.pending, (state) => {
         state.loading = true;
         state.orderRequestData = true;
+        state.orderCreate = false;
       })
       .addCase(newUserOrder.rejected, (state, action) => {
         state.loading = false;
         state.orderRequestData = false;
+        state.orderCreate = false;
       })
       .addCase(newUserOrder.fulfilled, (state, action) => {
         state.loading = false;
         state.orders.push(action.payload.order);
         state.lastOrder = action.payload.order;
         state.orderRequestData = false;
+        state.orderCreate = true;
       });
   }
 });
@@ -82,6 +87,11 @@ export const getOrderRequestStatus = createSelector(
 export const getLastOrder = createSelector(
   [orderSliceSelectors],
   (state) => state.lastOrder
+);
+
+export const getOrderCreate = createSelector(
+  [orderSliceSelectors],
+  (state) => state.orderCreate
 );
 
 export const { setLastOrder } = orderSlice.actions;
