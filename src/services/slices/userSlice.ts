@@ -76,7 +76,7 @@ export const userSlice = createSlice({
       state.success = action.payload;
     },
     clearError: (state) => {
-      state.error = null
+      state.error = null;
     }
   },
   extraReducers: (builder) => {

@@ -14,7 +14,7 @@ export const Feed: FC = () => {
   const orderCreate = useSelector(getOrderCreate);
 
   useEffect(() => {
-    if(orderCreate) {
+    if (orderCreate) {
       dispatch(getAllFeeds());
     }
   }, [orderCreate]);
