@@ -115,28 +115,28 @@ export const userSlice = createSlice({
       .addCase(registerUser.pending, (state) => {
         state.loading = true;
         state.success = false;
+        state.error = null;
       })
       .addCase(registerUser.rejected, (state, action) => {
         state.loading = false;
         state.success = false;
+        state.error = action.error.message || 'Ошибка регистрации';
       })
       .addCase(registerUser.fulfilled, (state, action) => {
         state.loading = false;
         state.success = action.payload.success;
         state.user = action.payload.user;
+        state.error = null;
       })
 
       .addCase(updateUserData.pending, (state) => {
         state.loading = true;
-        state.success = false;
       })
       .addCase(updateUserData.rejected, (state, action) => {
         state.loading = false;
-        state.success = false;
       })
       .addCase(updateUserData.fulfilled, (state, action) => {
         state.loading = false;
-        state.success = action.payload.success;
         state.user = action.payload.user;
       })
 

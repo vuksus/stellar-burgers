@@ -14,10 +14,12 @@ export const Feed: FC = () => {
   const orderCreate = useSelector(getOrderCreate);
 
   useEffect(() => {
-    if (orderCreate) {
-      dispatch(getAllFeeds());
-    }
-  }, [orderCreate]);
+    dispatch(getAllFeeds());
+  }, [dispatch]);
+
+  useEffect(() => {
+    if (orderCreate) dispatch(getAllFeeds());
+  }, [orderCreate, dispatch]);
 
   if (!orders.length) {
     return <Preloader />;

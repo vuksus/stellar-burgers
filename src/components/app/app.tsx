@@ -66,7 +66,7 @@ const App = () => {
         <Route
           path='/ingredients/:id'
           element={
-            <Modal title={''} onClose={() => navigate('/')}>
+            <Modal title={'Детали ингредиента'} onClose={() => navigate('/')}>
               <IngredientDetails />
             </Modal>
           }
@@ -148,7 +148,7 @@ const App = () => {
           <Route
             path='/ingredients/:id'
             element={
-              <Modal title={''} onClose={() => navigate('/')}>
+              <Modal title={'Детали ингредиента'} onClose={() => navigate('/')}>
                 <IngredientDetails />
               </Modal>
             }
