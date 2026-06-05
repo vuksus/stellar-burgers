@@ -1,6 +1,11 @@
 import { test, expect } from '@playwright/test';
 
 test('test modal', async ({ page }) => {
+    await page.routeFromHAR('tests/hars/ingredients.har', {
+    url: '**/ingredients',
+    update: false
+  });
+
     await page.goto('/');
 
     const ingredient = page.locator('li:has-text("Краторная булка N-200i")');

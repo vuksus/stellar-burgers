@@ -1,6 +1,11 @@
 import { test, expect } from '@playwright/test';
 
 test('test add constructor', async ({ page }) => {
+  await page.routeFromHAR('tests/hars/ingredients.har', {
+    url: '**/ingredients',
+    update: false
+  });
+
   await page.goto('/');
 
   const ingredientBun = page.locator('li:has-text("Краторная булка N-200i")');
@@ -29,4 +34,19 @@ test('test add constructor', async ({ page }) => {
   await addButtonSouce.click();
 
   await expect(page.locator('.constructor-element').nth(2)).toContainText('Соус Spicy-X');
+
+  const constructorMain = page.locator('.constructor-element').nth(1);
+  const buttonClearMain = constructorMain.locator('svg').nth(1);
+
+  await buttonClearMain.click();
+
+  const constructorSouce = page.locator('.constructor-element').nth(1);
+  const buttonClearSouce = constructorSouce.locator('svg').nth(1);
+
+  await buttonClearSouce.click();
+
+  const main = page.locator('main');
+  const constructor = main.locator('section').nth(1);
+
+  await expect(constructor.getByText('Выберите начинку')).toBeVisible();
 });

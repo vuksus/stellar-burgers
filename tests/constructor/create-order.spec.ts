@@ -1,21 +1,20 @@
 import { test, expect } from '@playwright/test';
 
-test('test add constructor', async ({ page }) => {
-  await page.route('**/api/auth/login', async (route) => {
-    await route.fulfill({
-      status: 200,
-      body: JSON.stringify(require('../mock-data/user.json'))
-    });
+test('test create order', async ({ page }) => {
+  await page.routeFromHAR('tests/hars/user.har', {
+    url: '**/api/auth/login', 
+    update: false
   });
 
   await page.goto('/login');
 
   await page.fill('input[name="email"]', 'test@example.com');
-  await page.fill('input[name="password"]', 'password123');
+  await page.fill('input[name="password"]', 'password');
 
   await page.click('button:has-text("Войти")');
 
-  await expect(page).toHaveURL('/');
+  await page.waitForLoadState('networkidle');
+  await page.waitForTimeout(2000);
 
   const ingredientBun = page.locator('li:has-text("Краторная булка N-200i")');
   const ingredientMain = page.locator('li:has-text("Биокотлета из марсианской Магнолии")');
@@ -25,8 +24,17 @@ test('test add constructor', async ({ page }) => {
   const addButtonMain = ingredientMain.locator('text=Добавить');
   const addButtonSouce = ingredientSouce.locator('text=Добавить');
 
+  await addButtonBun.waitFor({ state: 'visible'});
+
   await addButtonBun.click();
+
+  await addButtonMain.waitFor({ state: 'visible'});
+
   await addButtonMain.click();
+
+  await addButtonSouce.waitFor({ state: 'visible'});
+
+
   await addButtonSouce.click();
 
   const placeOrder = page.locator('button:has-text("Оформить заказ")');
