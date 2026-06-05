@@ -17,7 +17,7 @@ export const initialState: TBurgerConstructorSlice = {
   constructorIngredients: []
 };
 
-const burgerConstructorSlice = createSlice({
+export const burgerConstructorSlice = createSlice({
   name: 'burgerConstructor',
   initialState,
   reducers: {
@@ -30,7 +30,6 @@ const burgerConstructorSlice = createSlice({
         action.payload.type === 'bun'
           ? (state.constructorBun = action.payload)
           : state.constructorIngredients.push(action.payload);
-        console.log(action.payload._id);
       }
     },
 
@@ -43,7 +42,6 @@ const burgerConstructorSlice = createSlice({
       const ingredientIndex = state.constructorIngredients.findIndex(
         (item) => item.id === action.payload
       );
-      // console.log(ingredientIndex);
       const [ingredient] = state.constructorIngredients.splice(
         ingredientIndex,
         1
