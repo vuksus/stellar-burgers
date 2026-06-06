@@ -24,7 +24,9 @@ test('test create order', async ({ page }) => {
   const addButtonMain = ingredientMain.locator('text=Добавить');
   const addButtonSouce = ingredientSouce.locator('text=Добавить');
 
-  await addButtonBun.waitFor({ state: 'visible'});
+  await page.waitForTimeout(2000);
+
+  await addButtonMain.waitFor({ state: 'visible'});
 
   await addButtonBun.click();
 
