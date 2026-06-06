@@ -20,7 +20,7 @@ import { deleteCookie, setCookie } from '../../utils/cookie';
 
 export const initialState: Pick<TAuthResponse, 'user' | 'success'> & {
   loading: boolean;
-  error: null | string;
+  error: null | string | undefined;
 } = {
   success: false,
   user: {
@@ -88,6 +88,7 @@ export const userSlice = createSlice({
       .addCase(getUserAuth.rejected, (state, action) => {
         state.loading = false;
         state.success = false;
+        state.error = action.error.message;
       })
       .addCase(getUserAuth.fulfilled, (state, action) => {
         state.loading = false;
@@ -98,7 +99,6 @@ export const userSlice = createSlice({
       .addCase(loginUser.pending, (state) => {
         state.loading = true;
         state.success = false;
-        state.error = null;
       })
       .addCase(loginUser.rejected, (state, action) => {
         state.loading = false;
@@ -109,13 +109,11 @@ export const userSlice = createSlice({
         state.loading = false;
         state.success = action.payload.success;
         state.user = action.payload.user;
-        state.error = null;
       })
 
       .addCase(registerUser.pending, (state) => {
         state.loading = true;
         state.success = false;
-        state.error = null;
       })
       .addCase(registerUser.rejected, (state, action) => {
         state.loading = false;
@@ -126,7 +124,6 @@ export const userSlice = createSlice({
         state.loading = false;
         state.success = action.payload.success;
         state.user = action.payload.user;
-        state.error = null;
       })
 
       .addCase(updateUserData.pending, (state) => {
@@ -134,6 +131,7 @@ export const userSlice = createSlice({
       })
       .addCase(updateUserData.rejected, (state, action) => {
         state.loading = false;
+        state.error = action.error.message;
       })
       .addCase(updateUserData.fulfilled, (state, action) => {
         state.loading = false;
@@ -147,6 +145,7 @@ export const userSlice = createSlice({
       .addCase(userLogout.rejected, (state, action) => {
         state.loading = false;
         state.success = false;
+        state.error = action.error.message;
       })
       .addCase(userLogout.fulfilled, (state, action) => {
         state.loading = false;

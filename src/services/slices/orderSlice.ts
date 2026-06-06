@@ -3,7 +3,7 @@ import {
   createSelector,
   createSlice
 } from '@reduxjs/toolkit';
-import { getOrdersApi, orderBurgerApi } from '@api';
+import { getOrdersApi, orderBurgerApi } from '../../utils/burger-api';
 import { TOrder } from '@utils-types';
 import { RootState } from '../store';
 
@@ -13,13 +13,15 @@ export type IOrders = {
   orderRequestData: boolean;
   loading: boolean;
   orderCreate: boolean;
+  error: string | null | undefined;
 };
 export const initialState: IOrders = {
   orders: [],
   lastOrder: null,
   orderRequestData: false,
   loading: false,
-  orderCreate: false
+  orderCreate: false,
+  error: null
 };
 
 export const getUserOrders = createAsyncThunk('order/getUserOrders', async () =>
@@ -46,6 +48,7 @@ export const orderSlice = createSlice({
       })
       .addCase(getUserOrders.rejected, (state, action) => {
         state.loading = false;
+        state.error = action.error.message;
       })
       .addCase(getUserOrders.fulfilled, (state, action) => {
         state.loading = false;
@@ -61,6 +64,7 @@ export const orderSlice = createSlice({
         state.loading = false;
         state.orderRequestData = false;
         state.orderCreate = false;
+        state.error = action.error.message;
       })
       .addCase(newUserOrder.fulfilled, (state, action) => {
         state.loading = false;

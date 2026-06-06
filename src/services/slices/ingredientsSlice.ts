@@ -43,7 +43,6 @@ const ingredientsSlice = createSlice({
           state.loadingData = false;
           state.error = null;
           state.ingredients = action.payload;
-          console.log(action.payload);
         }
       );
   }
