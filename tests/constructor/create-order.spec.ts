@@ -6,6 +6,11 @@ test('test create order', async ({ page }) => {
     update: false
   });
 
+  await page.routeFromHAR('tests/hars/ingredients.har', {
+    url: '**/ingredients',
+    update: false
+  });
+
   await page.goto('/login');
 
   await page.fill('input[name="email"]', 'test@example.com');
