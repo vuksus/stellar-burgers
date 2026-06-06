@@ -19,29 +19,21 @@ test('test create order', async ({ page }) => {
   await page.click('button:has-text("Войти")');
 
   await page.waitForLoadState('networkidle');
-  await page.waitForTimeout(2000);
+  await page.waitForTimeout(20000);
 
   const ingredientBun = page.locator('li:has-text("Краторная булка N-200i")');
+  await ingredientBun.waitFor({ state: 'visible', timeout: 15000 });
   const ingredientMain = page.locator('li:has-text("Биокотлета из марсианской Магнолии")');
+  await ingredientMain.waitFor({ state: 'visible', timeout: 15000 });
   const ingredientSouce = page.locator('li:has-text("Соус Spicy-X")');
+  await ingredientSouce.waitFor({ state: 'visible', timeout: 15000 });
 
   const addButtonBun = ingredientBun.locator('text=Добавить');
   const addButtonMain = ingredientMain.locator('text=Добавить');
   const addButtonSouce = ingredientSouce.locator('text=Добавить');
 
-  await addButtonBun.isVisible();
-  await addButtonBun.isEnabled();
-
   await addButtonBun.click();
-
-  await addButtonMain.isVisible();
-  await addButtonMain.isEnabled();
-
   await addButtonMain.click();
-
-  await addButtonSouce.isVisible();
-  await addButtonSouce.isEnabled();
-
   await addButtonSouce.click();
 
   const placeOrder = page.locator('button:has-text("Оформить заказ")');
